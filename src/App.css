@@ -240,15 +240,36 @@
 .app-shell.light .topbar .MuiTypography-caption { color: #b9d1ee; }
 .app-shell.light .top-divider { border-color: rgba(217, 236, 255, .34); }
 
-/* Receipts module: filters, grid and navy metric/action cards. */
+/* Receipts module: filters, grid and metric/action cards. */
 .receipts-board { padding-bottom: 12px; }
 .receipts-title { font-weight: 800 !important; letter-spacing: -.02em !important; margin-bottom: 20px !important; }
 .receipts-warehouse-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; width: 100%; margin-bottom: 24px; }
 .receipts-warehouse-filter { width: 25%; min-width: 260px; }
+.receipts-create-action { margin-left: auto; }
 .filter-field-warehouse { width: 100%; }
 .filter-field-warehouse .MuiSelect-select { min-height: 56px; display: flex; align-items: center; padding-top: 0; padding-bottom: 0; font-size: 16px; }
 .filter-field-warehouse .MuiSelect-icon { pointer-events: none; }
 .app-shell.light .filter-field-warehouse .filter-field-label, .app-shell.light .filter-field-warehouse .MuiSelect-select, .app-shell.light .filter-field-warehouse .MuiSelect-icon { color: #193b66; }
+.receipts-cards-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; width: 100%; margin-bottom: 28px; align-items: stretch; }
+.metric-card-header { display: flex; align-items: center; gap: 10px; }
+.metric-card-img { width: 30px; height: 30px; object-fit: contain; flex-shrink: 0; }
+.metric-card-body { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; padding: 6px 0; }
+.metric-card.white-navy { background: #ffffff !important; border: 1.5px solid #0d2745 !important; border-radius: 16px !important; box-shadow: 0 10px 28px rgba(13,39,69,.08) !important; color: #0d2745; min-height: 115px; padding: 16px 18px; }
+.metric-card.white-navy .metric-label { margin-top: 0 !important; color: #0d2745; font: 700 12px/1.2 'DM Mono', monospace !important; letter-spacing: .04em; text-transform: uppercase; }
+.metric-card.white-navy .metric-value { margin: 0 !important; color: #0d2745; font-size: 32px !important; font-weight: 800 !important; line-height: 1.15 !important; letter-spacing: -.03em !important; text-align: center; }
+.metric-card.white-navy .metric-amount { color: #4b6b94; font-size: 13px !important; font-weight: 600 !important; margin-top: 4px !important; text-align: center; }
+.metric-card.white-navy:hover { transform: translateY(-4px); border-color: #193b66 !important; box-shadow: 0 14px 34px rgba(13,39,69,.16) !important; }
+.metric-card.money { min-height: 130px; background: #ffffff !important; border: 2px solid #10b981 !important; border-radius: 16px !important; box-shadow: 0 0 15px rgba(16,185,129,.32), 0 8px 24px rgba(16,185,129,.14) !important; color: #0d2745; padding: 16px 18px; }
+.metric-card.money .metric-label { margin-top: 0 !important; color: #047857; font: 700 12px/1.2 'DM Mono', monospace !important; letter-spacing: .04em; text-transform: uppercase; }
+.metric-card.money .metric-value { margin: 0 !important; color: #0d2745; font-size: 19px !important; font-weight: 800 !important; line-height: 1.2 !important; text-align: center; }
+.metric-card.money:hover { transform: translateY(-4px); border-color: #059669 !important; box-shadow: 0 0 24px rgba(16,185,129,.5), 0 12px 30px rgba(16,185,129,.22) !important; }
+.dark .metric-card.white-navy, .premium .metric-card.white-navy { background: #ffffff !important; color: #0d2745; border-color: #0d2745 !important; }
+.dark .metric-card.white-navy .metric-label, .premium .metric-card.white-navy .metric-label { color: #0d2745; }
+.dark .metric-card.white-navy .metric-value, .premium .metric-card.white-navy .metric-value { color: #0d2745; }
+.dark .metric-card.white-navy .metric-amount, .premium .metric-card.white-navy .metric-amount { color: #4b6b94; }
+.dark .metric-card.money, .premium .metric-card.money { background: #ffffff !important; color: #0d2745; border-color: #10b981 !important; }
+.dark .metric-card.money .metric-label, .premium .metric-card.money .metric-label { color: #047857; }
+.dark .metric-card.money .metric-value, .premium .metric-card.money .metric-value { color: #0d2745; }
 .dashboard-context-card { display: flex; align-items: center; gap: 13px; flex: 0 0 250px; width: 250px; height: 68px; padding: 12px 16px; border: 1px solid rgba(255,255,255,.2); border-radius: 8px; box-shadow: 0 12px 26px rgba(37,16,30,.24); color: #fff; text-align: left; }
 .dashboard-context-card.rose { background: linear-gradient(125deg, #c2414e 0%, #8c1d40 48%, #421429 100%); }
 .dashboard-context-card.emerald { background: linear-gradient(125deg, #169b62 0%, #0b6947 52%, #123c36 100%); }
@@ -293,8 +314,10 @@
 .app-dialog-paper-light { background-color: #ffffff !important; }
 .app-dialog-paper-dark { background-color: #10243c !important; }
 .app-dialog-paper-premium { background-color: #27221b !important; }
+@media (max-width: 1100px) { .receipts-cards-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 980px) { .receipts-warehouse-filter { width: 45%; } }
 @media (max-width: 720px) { .receipts-warehouse-row { align-items: stretch; flex-direction: column; gap: 14px; } .receipts-warehouse-filter, .dashboard-context-card { width: 100%; min-width: 0; } .dashboard-context-card { flex-basis: 68px; } .receipts-filters-row { padding: 16px; } .filter-field, .filter-field-warehouse { width: 100%; max-width: none; } .receipts-filters-actions { width: 100%; margin-left: 0; } }
+@media (max-width: 580px) { .receipts-cards-grid { grid-template-columns: 1fr; } }
 
 /* The sidebar must always sit beside page content, never on top of or below it. */
 .desktop-drawer { position: fixed !important; z-index: 1100; top: 74px; left: 0; bottom: 0; }

@@ -7,12 +7,11 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
-  Stack,
   TextField,
   Tooltip,
   Typography,
 } from '@mui/material'
-import { AccountBalanceWalletRounded, AddRounded, ClearRounded, DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material'
+import { AddRounded, ClearRounded, DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material'
 import { receiptsService, warehousesService } from '../../service'
 import { CollapsiblePanel } from '../CollapsiblePanel'
 import { DataTable } from '../DataTable'
@@ -23,6 +22,10 @@ import { ReceiptStatusChip } from './ReceiptStatusChip'
 import { ReceiptDetailDialog } from './ReceiptDetailDialog'
 import { ReceiptFormDialog } from './ReceiptFormDialog'
 import { ConfirmDialog } from '../ConfirmDialog'
+import moneyIcon from '../../assets/money.png'
+import nuevaIcon from '../../assets/nueva.png'
+import enviadaIcon from '../../assets/enviada.png'
+import recibidaIcon from '../../assets/recibida.png'
 import {
   formatReceiptAmount,
   formatReceiptDate,
@@ -33,7 +36,7 @@ import {
   sortReceipts,
 } from './receiptUtils'
 
-const ROWS_PER_PAGE = 10
+const ROWS_PER_PAGE = 30
 
 function nextLocalId(receipts) {
   return receipts.reduce((max, receipt) => Math.max(max, receipt.id ?? 0), 0) + 1
@@ -336,19 +339,45 @@ export function ReceiptsBoard({ user, canWrite, isOwner, onError }) {
           </FilterField>
         </Box>
         {canWrite && (
-          <DashboardContextCard
-            icon={<AddRounded />}
-            label="Registrar envío"
-            value="Nueva recepción"
-            tone="emerald"
-            onClick={() => setFormDialog({ open: true, mode: 'create', receipt: null })}
-          />
+          <Box className="receipts-create-action">
+            <DashboardContextCard
+              icon={<AddRounded />}
+              label="Registrar envío"
+              value="Nueva recepción"
+              tone="emerald"
+              onClick={() => setFormDialog({ open: true, mode: 'create', receipt: null })}
+            />
+          </Box>
         )}
-        <DashboardContextCard
-          icon={<AccountBalanceWalletRounded />}
+      </Box>
+
+      <Box className="receipts-cards-grid">
+        <MetricCard
+          image={moneyIcon}
           label="Importe total"
           value={formatReceiptAmount(filteredReceiptsTotal)}
-          tone="rose"
+          variant="money"
+        />
+        <MetricCard
+          image={nuevaIcon}
+          label="Recepciones nuevas"
+          value={newCount}
+          amount={sumReceiptPrices(newReceipts)}
+          variant="white-navy"
+        />
+        <MetricCard
+          image={enviadaIcon}
+          label="Recepciones enviadas"
+          value={sentCount}
+          amount={sumReceiptPrices(sentReceipts)}
+          variant="white-navy"
+        />
+        <MetricCard
+          image={recibidaIcon}
+          label="Recepciones recibidas"
+          value={receivedCount}
+          amount={sumReceiptPrices(receivedReceipts)}
+          variant="white-navy"
         />
       </Box>
 
@@ -454,12 +483,6 @@ export function ReceiptsBoard({ user, canWrite, isOwner, onError }) {
         sortDirection={sort.direction}
         onSortChange={handleSortChange}
       />
-
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5} className="receipt-metrics">
-        <MetricCard icon="🆕" value={newCount} amount={sumReceiptPrices(newReceipts)} label="Recepciones nuevas" />
-        <MetricCard icon="📤" value={sentCount} amount={sumReceiptPrices(sentReceipts)} label="Recepciones enviadas" />
-        <MetricCard icon="📥" value={receivedCount} amount={sumReceiptPrices(receivedReceipts)} label="Recepciones recibidas" />
-      </Stack>
 
       <ReceiptDetailDialog
         open={Boolean(detailReceipt)}
