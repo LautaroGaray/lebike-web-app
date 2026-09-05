@@ -7,6 +7,7 @@
     "origin": "WH-001",
     "destiny": "WH-002",
     "description": "Transfer of electronic components",
+    "price": 479.98,
     "userId": 3,
     "username": "user1",
     "userEmail": "user1@local",
@@ -18,6 +19,8 @@
         "articleId": 1,
         "articleSku": "ART-0001",
         "articleName": "Mountain Tire",
+        "salePrice": 180.00,
+        "supplier": "Contoso",
         "creationDate": "2026-09-04T17:45:00",
         "editDate": "2026-09-04T18:00:00"
       },
@@ -26,6 +29,8 @@
         "articleId": 2,
         "articleSku": "ART-0002",
         "articleName": "Hydraulic Brake Kit",
+        "salePrice": 299.98,
+        "supplier": "Fabrikam",
         "creationDate": "2026-09-04T17:45:00",
         "editDate": "2026-09-04T18:00:00"
       }

@@ -19,5 +19,16 @@ export function getAvailableThemeModes(roleName) {
 }
 
 export function createAppTheme(mode) {
-  return createTheme({ ...(themePresets[mode] ?? themePresets.light), typography: { fontFamily: 'Manrope, Avenir Next, sans-serif' }, shape: { borderRadius: 14 }, components: { MuiButton: { styleOverrides: { root: { textTransform: 'none', fontWeight: 700 } } }, MuiPaper: { styleOverrides: { root: { backgroundImage: 'none' } } } } })
+  const theme = createTheme({
+    ...(themePresets[mode] ?? themePresets.light),
+    typography: { fontFamily: 'Manrope, Avenir Next, sans-serif' },
+    shape: { borderRadius: 14 },
+    components: {
+      MuiButton: { styleOverrides: { root: { textTransform: 'none', fontWeight: 700 } } },
+      MuiPaper: { styleOverrides: { root: { backgroundImage: 'none' } } },
+    },
+  })
+  // Exposes the app-level mode name (light/dark/premium) so components like AppDialog can style beyond MUI's plain light/dark palette.mode.
+  theme.uiMode = themePresets[mode] ? mode : 'light'
+  return theme
 }

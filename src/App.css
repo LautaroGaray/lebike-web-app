@@ -40,6 +40,8 @@
 .welcome-panel { display: flex; align-items: center; gap: 18px; padding: 28px; border: 1px solid rgba(255,255,255,.5); border-radius: 18px; background: rgba(255,255,255,.44); box-shadow: 0 18px 40px rgba(49, 74, 71, .08); backdrop-filter: blur(18px); }
 .welcome-panel > svg { color: #0f766e; font-size: 35px; }
 .mobile-menu, .mobile-drawer { display: none !important; }
+.menu-toggle { display: inline-flex !important; color: inherit !important; }
+.navigation .MuiListItemText-primary { font-weight: 700; }
 .error-dialog .MuiPaper-root { border-radius: 18px; padding: 8px; min-width: min(390px, calc(100% - 32px)); }
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 720px) { .login-card { padding: 28px; }.login-card .brand-lockup { margin-bottom: 36px; }.desktop-drawer { display: none; }.mobile-menu, .mobile-drawer { display: inline-flex !important; }.content-area { padding: 42px 22px; }.topbar .MuiToolbar-root { padding: 0 16px; }.profile > div:not(.MuiAvatar-root) { display: none; }.theme-select { display: none; }.top-divider { margin: 16px 5px; }.page-title { font-size: 34px !important; }.welcome-panel { align-items: flex-start; } }
@@ -104,11 +106,6 @@
 .brand-lockup .MuiTypography-root { font-size: 25px; letter-spacing: -.05em; }
 .topbar .brand-lockup .brand-symbol { width: 35px; height: 35px; }
 .topbar .brand-lockup .MuiTypography-root { font-size: 23px; }
-.navigation-heading { display: flex; align-items: center; justify-content: flex-end; min-height: 40px; margin: 0 4px 18px 16px; }
-.navigation-heading .nav-label { margin: 0; }
-.navigation-toggle { min-width: 34px !important; width: 34px; height: 34px; padding: 5px !important; color: inherit !important; border-radius: 9px !important; }
-.navigation-toggle:hover { background: rgba(78,120,183,.13) !important; }
-.navigation-toggle.is-collapsed svg { transform: rotate(180deg); }
 .desktop-drawer .MuiDrawer-paper { transition: width .24s ease; }
 .desktop-drawer.collapsed .MuiDrawer-paper { width: 82px; }
 .desktop-drawer.collapsed .navigation { width: 82px; padding-left: 10px; padding-right: 10px; }
@@ -208,3 +205,115 @@
 .lightning-canvas { position: absolute; z-index: 0; inset: 0; display: block; width: 100%; height: 100%; pointer-events: none; }
 .login-page .storm-bike { z-index: 1; }
 .login-page .login-card { z-index: 2; }
+
+/* Quiet metal backdrop with a single, low-contrast wheel silhouette. */
+.login-page { background: radial-gradient(circle at 78% 48%, rgba(28, 65, 108, .58), transparent 39%), linear-gradient(115deg, #071528 0%, #0b2039 48%, #06101f 100%); }
+.login-page::before { display: block; opacity: .16; background-image: repeating-linear-gradient(102deg, rgba(167, 198, 229, .18) 0, rgba(167, 198, 229, .18) 1px, transparent 1px, transparent 7px), linear-gradient(90deg, rgba(0, 0, 0, .28), transparent 40%, rgba(0, 0, 0, .2)); background-size: auto, 100% 100%; mask-image: linear-gradient(90deg, black, rgba(0, 0, 0, .72) 70%, transparent); }
+.login-wheel { position: absolute; z-index: 1; width: min(760px, 68vw); aspect-ratio: 1; right: -17%; top: 50%; transform: translateY(-50%); opacity: .36; filter: drop-shadow(0 0 18px rgba(77, 144, 209, .12)); }
+.login-wheel svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.wheel-tire { fill: rgba(3, 13, 26, .88); stroke: rgba(169, 201, 230, .18); stroke-width: 3; }
+.wheel-sidewall { fill: none; stroke: rgba(101, 139, 177, .3); stroke-width: 5; stroke-dasharray: 2 5; }
+.wheel-rim-shadow { fill: none; stroke: rgba(3, 15, 31, .74); stroke-width: 8; }
+.wheel-rim { fill: none; stroke: url(#wheel-rim); stroke-width: 2.2; }
+.wheel-rotor { transform-origin: 130px 130px; }
+.wheel-spoke { stroke: rgba(177, 211, 239, .29); stroke-width: .65; }
+.wheel-spoke-crossed { stroke: rgba(95, 151, 198, .24); stroke-width: .5; }
+.wheel-nipple { fill: rgba(204, 226, 244, .48); }
+.wheel-brake-rotor { fill: rgba(110, 151, 188, .08); stroke: rgba(182, 211, 235, .32); stroke-width: 1.2; }
+.wheel-rotor-hole { fill: rgba(4, 17, 33, .8); stroke: rgba(183, 211, 234, .16); stroke-width: .35; }
+.wheel-hub-ring { fill: rgba(7, 25, 44, .86); stroke: rgba(143, 184, 219, .5); stroke-width: 1.3; }
+.wheel-hub { fill: url(#wheel-hub); stroke: rgba(225, 241, 255, .54); stroke-width: .7; }
+.wheel-valve { fill: none; stroke: rgba(196, 221, 242, .62); stroke-width: 1.1; stroke-linecap: round; }
+.login-wheel.is-spinning .wheel-rotor { animation: wheel-turn .85s cubic-bezier(.2, .76, .3, 1); }
+@keyframes wheel-turn { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.login-card { z-index: 2; }
+@media (max-width: 720px) { .login-wheel { width: 125vw; right: -68%; opacity: .28; }.login-page::before { opacity: .12; } }
+@media (prefers-reduced-motion: reduce) { .login-wheel.is-spinning .wheel-rotor { animation: none; } }
+
+/* Keep the light theme focused on the night-blue navigation shell. */
+.app-shell.light .topbar, .app-shell.light .desktop-drawer .MuiDrawer-paper, .app-shell.light .mobile-drawer .MuiDrawer-paper { background: linear-gradient(112deg, #071528 0%, #0d2745 52%, #061326 100%); color: #f5f8fd; border-color: rgba(157, 194, 226, .18); }
+.app-shell.light .topbar { box-shadow: 0 8px 24px rgba(4, 15, 30, .2); }
+.app-shell.light .navigation { color: #f5f8fd; }
+.app-shell.light .navigation .Mui-selected { color: #ffffff; background: linear-gradient(100deg, rgba(103, 166, 225, .3), rgba(53, 103, 159, .18)) !important; }
+.app-shell.light .navigation .MuiListItemButton-root:hover { background: linear-gradient(100deg, rgba(129, 188, 239, .2), rgba(53, 103, 159, .14)); }
+.app-shell.light .topbar .brand-lockup, .app-shell.light .topbar .MuiIconButton-root, .app-shell.light .topbar .MuiSelect-select, .app-shell.light .topbar .MuiSvgIcon-root { color: #ffffff; }
+.app-shell.light .topbar .MuiTypography-caption { color: #b9d1ee; }
+.app-shell.light .top-divider { border-color: rgba(217, 236, 255, .34); }
+
+/* Receipts module: filters, grid and navy metric/action cards. */
+.receipts-board { padding-bottom: 12px; }
+.receipts-title { font-weight: 800 !important; letter-spacing: -.02em !important; margin-bottom: 20px !important; }
+.receipts-warehouse-row { width: 25%; min-width: 260px; margin-bottom: 24px; }
+.filter-field-warehouse { width: 100%; }
+.filter-field-warehouse .MuiAutocomplete-inputRoot { min-height: 56px; padding-top: 7px !important; padding-bottom: 7px !important; font-size: 16px; }
+.app-shell.light .filter-field-warehouse .filter-field-label, .app-shell.light .filter-field-warehouse .MuiAutocomplete-input { color: #193b66; }
+.receipts-filters-panel { margin-bottom: 30px; }
+.receipts-filters-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 18px; width: 100%; padding: 20px 22px; }
+.receipts-filters-row .filter-field { flex: 1 1 170px; min-width: 160px; }
+.receipts-filters-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; flex-wrap: wrap; }
+.filter-field { display: flex; flex-direction: column; gap: 7px; }
+.filter-field-label { font: 600 11px/1.2 'DM Mono', monospace !important; letter-spacing: .05em; text-transform: uppercase; color: #667b78; }
+.dark .filter-field-label, .premium .filter-field-label { color: #9fb4c9; }
+.filter-field .MuiSelect-select, .filter-field .MuiInputBase-input { padding-top: 13px; padding-bottom: 13px; font-size: 14.5px; }
+.receipt-filter-menu { min-width: 260px !important; max-height: 320px; }
+.receipt-filter-menu .MuiMenuItem-root { font-size: 15px; }
+.filters-clear-button { color: #5c6b76 !important; border-color: rgba(92,107,118,.4) !important; }
+.dark .filters-clear-button, .premium .filters-clear-button { color: #b7c3cc !important; border-color: rgba(183,195,204,.35) !important; }
+.receipt-description-cell { max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.receipt-amount-cell { font-weight: 800 !important; white-space: nowrap; }
+.receipt-status-chip .MuiChip-label { text-transform: capitalize; }
+.receipt-metrics .metric-card { flex: 1 1 220px; }
+.metric-card.navy { background: linear-gradient(135deg, #0d2745 0%, #193b66 55%, #244f82 100%) !important; border-color: rgba(255,255,255,.14) !important; box-shadow: 0 18px 40px rgba(6,19,38,.35) !important; color: #eef3fb; }
+.metric-card.navy .metric-value { color: #ffffff; }
+.metric-card.navy .metric-amount { color: #b9d1ee; }
+.metric-card.navy .metric-label { color: rgba(238,243,251,.72); }
+.metric-icon-glass { display: inline-grid; place-items: center; width: 42px; height: 42px; margin-bottom: 6px; border-radius: 12px; font-size: 22px; line-height: 1; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.22); backdrop-filter: blur(6px); }
+.receipt-create-card { display: flex; align-items: center; gap: 14px; min-width: 240px; padding: 14px 20px; border: 1px solid rgba(255,255,255,.2); border-radius: 16px; cursor: pointer; text-align: left; font: inherit; color: #eafff2; background: linear-gradient(135deg, #0b3d2e 0%, #15803d 55%, #22a464 100%); box-shadow: 0 14px 32px rgba(10,58,38,.32); transition: transform .2s, box-shadow .2s; }
+.receipt-create-card:hover { transform: translateY(-2px); box-shadow: 0 18px 40px rgba(10,58,38,.42); }
+.receipt-create-card:disabled { cursor: not-allowed; }
+.receipt-create-card:disabled:hover { transform: none; box-shadow: 0 14px 32px rgba(10,58,38,.32); }
+.receipt-create-icon { display: inline-grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border-radius: 12px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.22); }
+.receipt-create-text { display: flex; flex-direction: column; gap: 2px; }
+.receipt-create-text strong { font-size: 14.5px; }
+.receipt-create-text small { color: rgba(238,243,251,.72); font-size: 12px; }
+/* Reusable AppDialog: themed backdrop veil and an opaque, readable content box. */
+.app-dialog .MuiPaper-root { border-radius: 18px; }
+.app-dialog-title.MuiDialogTitle-root { position: relative; padding-right: 52px; }
+.app-dialog-close { position: absolute !important; right: 10px; top: 8px; }
+.app-dialog-backdrop { backdrop-filter: blur(5px); }
+.app-dialog-backdrop-light, .app-dialog-backdrop-dark { background-color: rgba(6, 19, 38, .93) !important; }
+.app-dialog-backdrop-premium { background-color: rgba(42, 27, 10, .94) !important; }
+.app-dialog-paper-light { background-color: #ffffff !important; }
+.app-dialog-paper-dark { background-color: #10243c !important; }
+.app-dialog-paper-premium { background-color: #27221b !important; }
+@media (max-width: 980px) { .receipts-warehouse-row { width: 45%; } }
+@media (max-width: 720px) { .receipts-warehouse-row { width: 100%; min-width: 0; } .receipts-filters-row { padding: 16px; } .filter-field, .filter-field-warehouse { width: 100%; max-width: none; } .receipts-filters-actions { width: 100%; margin-left: 0; } .receipt-create-card { width: 100%; } }
+
+/* The sidebar must always sit beside page content, never on top of or below it. */
+.desktop-drawer { position: fixed !important; z-index: 1100; top: 74px; left: 0; bottom: 0; }
+.desktop-drawer .MuiDrawer-paper { position: fixed; top: 74px; left: 0; bottom: 0; height: auto; overflow-y: auto; }
+.topbar { position: sticky; top: 0; z-index: 1200; border-bottom: 0; box-shadow: none !important; }
+.app-shell.light .topbar, .app-shell.light .desktop-drawer .MuiDrawer-paper { background: linear-gradient(112deg, #071528 0%, #0d2745 52%, #061326 100%); }
+.app-shell.dark .topbar, .app-shell.dark .desktop-drawer .MuiDrawer-paper { background: linear-gradient(112deg, #061426 0%, #0b2a4b 52%, #051121 100%); }
+.app-shell.premium .topbar, .app-shell.premium .desktop-drawer .MuiDrawer-paper { background: linear-gradient(112deg, #211d17 0%, #332819 52%, #17130e 100%); }
+.workspace .content-area { flex: 1 1 auto; width: calc(100% - 252px); margin-left: 252px; transition: margin-left .24s ease, width .24s ease; }
+.workspace.collapsed .content-area { width: calc(100% - 82px); margin-left: 82px; }
+@media (max-width: 720px) { .workspace .content-area { width: 100%; margin-left: 0; } }
+
+/* When the sidebar is expanded there is less room for the grid; thin it out before it overflows. */
+@media (max-width: 1200px) { .workspace:not(.collapsed) .receipt-col-description { display: none; } }
+@media (max-width: 980px) { .workspace:not(.collapsed) .receipt-col-date { display: none; } .workspace.collapsed .receipt-col-description { display: none; } }
+@media (max-width: 780px) { .receipt-col-description, .receipt-col-date { display: none; } }
+
+/* Shared collapsible container for filter areas, data tables, and future grouped controls. */
+.collapsible-panel { border: 1px solid rgba(255,255,255,.5); border-radius: 18px; background: rgba(255,255,255,.5); backdrop-filter: blur(14px); box-shadow: 0 18px 40px rgba(49,74,71,.08); overflow: hidden; }
+.data-table-panel { margin-bottom: 30px; }
+.collapsible-panel-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 22px; cursor: pointer; user-select: none; transition: background .2s; }
+.collapsible-panel-header:hover { background: rgba(15,118,110,.06); }
+.collapsible-panel-title { font-weight: 700 !important; font-size: 15px !important; }
+.collapsible-panel-body { border-top: 1px solid rgba(111,141,135,.14); }
+.dark .collapsible-panel, .premium .collapsible-panel { background: rgba(28,39,43,.62); border-color: rgba(255,255,255,.1); }
+.dark .collapsible-panel-header:hover, .premium .collapsible-panel-header:hover { background: rgba(141,179,223,.08); }
+.receipts-filters-panel { background: #ffffff; border-color: rgba(25,59,102,.15); }
+.dark .receipts-filters-panel { background: #10243c; border-color: rgba(141,179,223,.2); }
+.premium .receipts-filters-panel { background: #2b251c; border-color: rgba(224,173,88,.22); }

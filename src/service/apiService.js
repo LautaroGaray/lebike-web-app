@@ -39,6 +39,7 @@ const authSession = {
   token: null,
   user: null,
   roleName: null,
+  modules: [],
 }
 
 export const session = {
@@ -56,10 +57,22 @@ export const session = {
   getRole() {
     return authSession.roleName
   },
+  // Permissions come only from the backend `/modules/loadByUser` response; kept out of React state so they cannot be tampered with via devtools component inspection.
+  setModules(modules) {
+    authSession.modules = Array.isArray(modules) ? modules : []
+  },
+  getModules() {
+    return authSession.modules
+  },
+  getModulePermissions(mainId) {
+    const module = authSession.modules.find((item) => item.mainId === mainId)
+    return module?.permissions ?? { READ: false, WRITE: false }
+  },
   clear() {
     authSession.token = null
     authSession.user = null
     authSession.roleName = null
+    authSession.modules = []
   },
 }
 

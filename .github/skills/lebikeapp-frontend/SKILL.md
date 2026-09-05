@@ -11,11 +11,15 @@ description: "Use when building or changing the LebikeApp frontend: MUI screens,
 - Use Vite environment files: `npm run start:local` / `build:local` loads `.env.local` with the mock interceptor; `npm run start:dev` / `build:dev` loads `.env.dev`; `npm run start:prod` / `build:prod` loads `.env.prod`. The local script uses Vite's `development` mode because `local` is reserved by Vite for the `.env.local` suffix. Never commit real credentials or secrets in these files.
 - Set `VITE_USE_MOCK_API=true` only for local development. Mock responses belong in `src/service/mockResponses.js` and should mirror `examples-frontend`.
 - Keep authentication state out of browser storage. The current frontend-only fallback keeps it in memory; production should use a backend-issued `HttpOnly`, `Secure`, `SameSite` cookie.
+- Module permissions (`READ`/`WRITE`) always come from the `/modules/loadByUser` response; never hardcode permission rules per module in components. Read resolved permissions through `session.getModulePermissions(mainId)` (`src/service/apiService.js`), which stores them in the in-memory session object instead of ordinary React state, so they are not trivially editable via devtools component inspection. The backend must still be the real authority for every write action.
 - Use a consistent MUI error dialog, responsive light/dark themes, and expose the premium theme only to users whose role is `OWNER`.
 - Build the navigation from the `modules/user` service response, rendering `children` as nested menu items and preserving permissions for future route guards.
 - Keep `src/App.jsx` focused on providers, route composition, session orchestration, and global error state. Do not define page screens there.
 - Put full screens in `src/pages`, persistent authenticated composition in `src/layouts`, and reusable visual/navigation units in `src/components`.
-- Keep global horizontal and lateral navigation in the authenticated layout so every authenticated page receives the same shell through composition.
+- Keep global horizontal and lateral navigation in the authenticated layout so every authenticated page receives the same shell through composition. Both navigation surfaces must remain available while content scrolls: keep the topbar sticky at the top of the viewport and the desktop sidebar fixed beneath it.
+- Every authenticated page's content area must reserve horizontal space for the sidebar, at least its collapsed width, so content is never rendered underneath or hidden behind the navigation; it must always sit beside it. When the sidebar expands, the content area (and any data grids/tables inside it) must shrink and adapt responsively, hiding lower-priority columns before letting the grid overflow or get covered.
+- Wrap every data table/grid in the shared `DataTablePanel` component (`src/components/DataTablePanel.jsx`): a titled, collapsible container. Give it a short descriptive title and do not build ad hoc table containers per page. For filter areas or other grouped controls, use `CollapsiblePanel` (`src/components/CollapsiblePanel.jsx`) with the same visual behavior instead of duplicating accordion logic. Filter panels must initialize collapsed (`defaultExpanded={false}`).
+- When displaying warehouses (or other coded catalog entities) anywhere in the UI, always resolve and show the human-readable name; never expose the internal code.
 - Use MUI for interface components and a deliberate 2026 visual direction: restrained glass surfaces, expressive typography, strong spacing hierarchy, subtle motion, responsive states, and modern teal, cobalt, and warm gold accents. Avoid generic card grids, purple defaults, and decorative effects without product meaning.
 - Define visual colors through MUI theme presets and palette tokens, never by duplicating role/theme color literals in components.
 - Theme access is role-controlled: `USER` and `ADMIN` can use `light` and `dark`; `OWNER` can also use `premium`.
@@ -25,6 +29,7 @@ description: "Use when building or changing the LebikeApp frontend: MUI screens,
 - Login may use subtle, low-contrast particles and elegant electric light effects behind the form, but effects must remain decorative, performant, and never compete with inputs or CTA content.
 - Treat spacing as a product constraint: define clear margins, gaps, and responsive breakpoints so visual elements never overlap on desktop or mobile.
 - Every new screen and layout must be tested for both web and mobile widths, with readable content, stable controls, and no horizontal overflow.
+- Always write JSX/JS as a human would: multi-line, indented statements and props, one attribute or a small readable group per line for anything non-trivial. Never condense a component or a whole `return` into one long line, even for brevity.
 
 ## Visual Composition Rules
 
