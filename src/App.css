@@ -245,8 +245,9 @@
 .receipts-title { font-weight: 800 !important; letter-spacing: -.02em !important; margin-bottom: 20px !important; }
 .receipts-warehouse-row { width: 25%; min-width: 260px; margin-bottom: 24px; }
 .filter-field-warehouse { width: 100%; }
-.filter-field-warehouse .MuiAutocomplete-inputRoot { min-height: 56px; padding-top: 7px !important; padding-bottom: 7px !important; font-size: 16px; }
-.app-shell.light .filter-field-warehouse .filter-field-label, .app-shell.light .filter-field-warehouse .MuiAutocomplete-input { color: #193b66; }
+.filter-field-warehouse .MuiSelect-select { min-height: 56px; display: flex; align-items: center; padding-top: 0; padding-bottom: 0; font-size: 16px; }
+.filter-field-warehouse .MuiSelect-icon { pointer-events: none; }
+.app-shell.light .filter-field-warehouse .filter-field-label, .app-shell.light .filter-field-warehouse .MuiSelect-select, .app-shell.light .filter-field-warehouse .MuiSelect-icon { color: #193b66; }
 .receipts-filters-panel { margin-bottom: 30px; }
 .receipts-filters-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 18px; width: 100%; padding: 20px 22px; }
 .receipts-filters-row .filter-field { flex: 1 1 170px; min-width: 160px; }

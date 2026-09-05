@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
-  Autocomplete,
   Box,
   Button,
   Checkbox,
@@ -310,42 +309,26 @@ export function ReceiptsBoard({ user, canWrite, isOwner, onError }) {
 
       <Box className="receipts-warehouse-row">
         <FilterField label="Depósitos" className="filter-field-warehouse">
-          <Autocomplete
+          <Select
             multiple
             fullWidth
-            disableCloseOnSelect
-            options={warehouses}
-            value={warehouses.filter((warehouse) => selectedCodes.includes(warehouse.code))}
-            getOptionLabel={(warehouse) => warehouse.name}
-            isOptionEqualToValue={(option, value) => option.code === value.code}
-            onChange={(_, selectedWarehouses) => {
-              setSelectedCodes(selectedWarehouses.map((warehouse) => warehouse.code))
-              setPage(0)
-            }}
+            value={selectedCodes}
+            onChange={handleWarehouseFilterChange}
+            input={<OutlinedInput notched={false} />}
             aria-label="Depósitos"
-            className="warehouse-autocomplete"
-            renderOption={({ key, ...optionProps }, warehouse, { selected }) => (
-              <li key={key} {...optionProps}>
-                <Checkbox checked={selected} />
-                {warehouse.name}
-              </li>
-            )}
-            renderInput={(params) => {
-              const { inputProps, ...textFieldProps } = params
-              return (
-                <TextField
-                  {...textFieldProps}
-                  placeholder={selectedCodes.length ? '' : 'Todos los depósitos'}
-                  slotProps={{
-                    htmlInput: {
-                      ...inputProps,
-                      'aria-label': 'Depósitos',
-                    },
-                  }}
-                />
-              )
+            MenuProps={{ slotProps: { paper: { className: 'receipt-filter-menu' } } }}
+            renderValue={(selected) => {
+              const label = selected.length ? selected.map(getWarehouseLabel).join(', ') : 'Todos los depósitos'
+              return <span title={label}>{label}</span>
             }}
-          />
+          >
+            {warehouses.map((warehouse) => (
+              <MenuItem key={warehouse.code} value={warehouse.code}>
+                <Checkbox checked={selectedCodes.includes(warehouse.code)} />
+                {warehouse.name}
+              </MenuItem>
+            ))}
+          </Select>
         </FilterField>
       </Box>
 
