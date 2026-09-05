@@ -1,0 +1,7 @@
+import { Box, Button, Stack, TextField, Typography } from '@mui/material'
+import { Brand } from '../components/Brand'
+import { GlowParticles } from '../components/GlowParticles'
+
+export function LoginPage({ login, setLogin, onSubmit, isLoading }) {
+  return <Box className="login-page"><GlowParticles /><Box component="main" className="login-card"><Brand /><Box className="login-intro"><Typography className="eyebrow">OPERATIONS PLATFORM</Typography><Typography variant="h2" className="login-title">Roda<br /><span>con nosotros.</span></Typography><Typography color="text.secondary">Accede a tu centro de control para continuar.</Typography></Box><Box component="form" className="login-form" onSubmit={onSubmit}><Stack className="login-fields" spacing={0}><TextField className="login-field" label="Usuario" value={login.username} onChange={(event) => setLogin({ ...login, username: event.target.value })} fullWidth autoComplete="username" /><TextField className="login-field" label="Contraseña" type="password" value={login.password} onChange={(event) => setLogin({ ...login, password: event.target.value })} fullWidth autoComplete="current-password" /><Button type="submit" variant="contained" size="large" disabled={isLoading} className="glow-button login-submit">{isLoading ? 'Validando...' : 'Entrar al espacio'}</Button></Stack></Box><Typography className="login-footnote" variant="caption" color="text.secondary">Sesión protegida · Conexión cifrada</Typography></Box></Box>
+}

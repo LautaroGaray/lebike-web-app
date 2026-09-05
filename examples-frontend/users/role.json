@@ -1,0 +1,7 @@
+{
+  "data": {
+    "roleName": "OWNER"
+  },
+  "isSuccess": true,
+  "message": "Current user role retrieved successfully"
+}
