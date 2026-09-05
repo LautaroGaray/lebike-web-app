@@ -1,28 +1,28 @@
 import { apiService } from './apiService'
 
 class ReceiptsService {
-  findAll(payload) {
-    return apiService.request('POST', '/receipts/findAll', payload)
+  findAll() {
+    return apiService.request('GET', '/receipts/findAll', undefined, { moduleMainId: 'MOD_RECEIPTS' })
   }
 
   findByUserAndWarehouse(payload) {
-    return apiService.request('POST', '/receipts/findByUserAndWarehouse', payload)
+    return apiService.request('POST', '/receipts/findByUserAndWarehouse', payload, { moduleMainId: 'MOD_RECEIPTS' })
   }
 
   register(payload) {
-    return apiService.request('POST', '/receipts/register', payload)
+    return apiService.request('POST', '/receipts/register', payload, { moduleMainId: 'MOD_RECEIPTS' })
   }
 
   edit(payload) {
-    return apiService.request('POST', '/receipts/edit', payload)
+    return apiService.request('POST', '/receipts/edit', payload, { moduleMainId: 'MOD_RECEIPTS' })
   }
 
   delete(payload) {
-    return apiService.request('POST', '/receipts/delete', payload)
+    return apiService.request('POST', '/receipts/delete', payload, { moduleMainId: 'MOD_RECEIPTS' })
   }
 
   history(payload) {
-    return apiService.request('POST', '/receipts/history', payload)
+    return apiService.request('POST', '/receipts/history', payload, { moduleMainId: 'MOD_RECEIPTS' })
   }
 }
 

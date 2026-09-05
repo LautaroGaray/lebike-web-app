@@ -66,7 +66,7 @@ export function ReceiptDetailDialog({ open, onClose, receipt, getWarehouseLabel,
           </Box>
           <Box>
             <Typography variant="caption" color="text.secondary">Importe total</Typography>
-            <Typography fontWeight={700}>{formatReceiptAmount(receipt.price)}</Typography>
+            <Typography fontWeight={700}>{formatReceiptAmount(receipt.totalAmount)}</Typography>
           </Box>
           <Divider />
           <Box>

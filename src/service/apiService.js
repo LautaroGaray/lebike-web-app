@@ -16,6 +16,26 @@ class ApiService {
       return structuredClone(mockResponses[mockKey])
     }
 
+    const module = options.moduleMainId
+      ? authSession.modules.find((item) => item.mainId === options.moduleMainId)
+      : options.bootstrapModuleMainId
+    const moduleMainId = typeof module === 'string' ? module : module?.mainId
+    const action = module?.permissions?.WRITE === true
+      ? 'WRITE'
+      : module?.permissions?.READ === true
+        ? 'READ'
+        : undefined
+    if (options.moduleMainId && (!moduleMainId || !action)) {
+      throw new Error('No se pudo resolver el módulo autorizado')
+    }
+    if (options.bootstrapModuleMainId && !moduleMainId) {
+      throw new Error('No se pudo resolver el módulo autorizado')
+    }
+
+    if (method.toUpperCase() === 'POST' && path === '/auth/login' && body?.email === 'admin@local' && body?.password === 'admin1234') {
+      console.log('POST /auth/login payload:', body)
+    }
+
     const response = await fetch(`${this.config.apiBaseUrl}${path}`, {
       method,
       credentials: 'include',
@@ -23,13 +43,23 @@ class ApiService {
         'Content-Type': 'application/json',
         ...options.headers,
         ...(authSession.token ? { Authorization: `Bearer ${authSession.token}` } : {}),
+        ...(action ? { 'X-Action': action } : {}),
+        ...(moduleMainId ? { 'X-Module-Main-Id': moduleMainId } : {}),
       },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     })
 
     const payload = await response.json().catch(() => ({}))
-    if (!response.ok || payload.isSuccess === false) {
-      throw new Error(payload.message || `Request failed with status ${response.status}`)
+    if (!response.ok || payload.isSuccess === false || payload.success === false) {
+      const errorMessage = payload.message || `Request failed with status ${response.status}`
+      if (errorMessage.includes('Missing required module id')) {
+        console.error('Backend rejected the module context:', { method, path, status: response.status })
+        throw new Error('No se pudo completar la operación. Intentá nuevamente.')
+      }
+      if (method.toUpperCase() === 'POST' && path === '/auth/login' && body?.email === 'admin@local' && body?.password === 'admin1234') {
+        console.error('POST /auth/login failed:', { status: response.status, payload })
+      }
+      throw new Error(errorMessage)
     }
     return payload
   }

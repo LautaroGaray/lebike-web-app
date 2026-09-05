@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material'
-import { authService, modulesService, rolesService, session, usersService } from './service'
+import { authService, modulesService, session } from './service'
 import { ErrorDialog } from './components/ErrorDialog'
 import { HomePage } from './pages/HomePage'
 import { LoginPage } from './pages/LoginPage'
@@ -20,7 +20,7 @@ function App() {
 function Application() {
   const [user, setUser] = useState(null)
   const [modules, setModules] = useState([])
-  const [login, setLogin] = useState({ username: 'jdoe', password: 'P@ssw0rd' })
+  const [login, setLogin] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [mode, setMode] = useState('light')
@@ -49,13 +49,21 @@ function Application() {
     event.preventDefault()
     setIsLoading(true)
     try {
+      
+        console.log('Payload de login enviado al backend:', login)
+      
       const authResponse = await authService.login(login)
-      const usersResponse = await usersService.findAll()
-      const nextUser = usersResponse.data?.find((item) => item.nickName === login.username) ?? usersResponse.data?.[0]
-      const roleResponse = await rolesService.findCurrentUserRole()
-      const authenticatedUser = { ...nextUser, roleName: roleResponse.data?.roleName ?? nextUser?.roleName }
-      session.setAuthentication(authResponse.data.token, authenticatedUser)
-      const modulesResponse = await modulesService.findByUser()
+      const authToken = authResponse.data?.token
+      if (!authToken) {
+        console.error('Login response missing authentication token:', authResponse)
+        throw new Error('No se pudo iniciar sesión. Intentá nuevamente.')
+      }
+      const authenticatedUser = {
+        email: login.email,
+        roleName: authResponse.data?.role,
+      }
+      session.setAuthentication(authToken, authenticatedUser)
+      const modulesResponse = await modulesService.findByUser(authenticatedUser.email)
       session.setModules(modulesResponse.data ?? [])
       setUser(authenticatedUser)
       setModules(modulesResponse.data ?? [])
@@ -68,12 +76,18 @@ function Application() {
     }
   }
 
-  const handleLogout = () => {
-    session.clear()
-    setUser(null)
-    setModules([])
-    setMode('light')
-    navigate('/login', { replace: true })
+  const handleLogout = async () => {
+    try {
+      await authService.logout()
+    } catch (logoutError) {
+      console.error('Logout request failed:', logoutError)
+    } finally {
+      session.clear()
+      setUser(null)
+      setModules([])
+      setMode('light')
+      navigate('/login', { replace: true })
+    }
   }
 
   return (

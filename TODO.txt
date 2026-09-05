@@ -5,12 +5,11 @@ coinciden con el objeto Receipt real (el que sí está bien documentado en las r
 examples-frontend/receipts/*.json). Se adaptaron los payloads del frontend para que tengan
 sentido con ese objeto. Falta que backend confirme/implemente estos contratos:
 
-1. POST /receipts/findAll
-   - Ejemplo original: { page, size, criteria: { q } }
-   - Payload que envía el frontend: { page: number, size: number, criteria: object }
+1. GET /receipts/findAll
+    - Contrato confirmado: no recibe body y devuelve el listado completo de receipts.
+    - El paginado se resuelve solo a nivel frontend.
    - El filtro multiselect de depósitos se resuelve hoy en el cliente sobre el listado
-     completo devuelto por el mock; falta definir si el filtrado/paginado real será
-     server-side.
+       completo devuelto por el backend; desarrollado.
 
 2. POST /receipts/register
    - Ejemplo original: { userId, warehouseId, items: [{ articleId, quantity, price }], total }
@@ -26,10 +25,9 @@ sentido con ese objeto. Falta que backend confirme/implemente estos contratos:
    - La respuesta de ejemplo es el historial de UNA recepción puntual, no de un usuario/rango.
    - Payload que envía el frontend: { receiptId: number }
 
-5. GET /warehouses
-   - No hay un endpoint documentado específicamente para poblar el multiselect de depósitos
-     ni para mapear código -> nombre en la grilla. Se asumió GET /warehouses sin body,
-     siguiendo el mismo patrón que GET /users y GET /modules/user.
+5. GET /warehouses/findAll
+    - Contrato confirmado: no recibe body y devuelve los warehouses autorizados para el
+       usuario autenticado. Para ADMIN la lista contiene únicamente sus warehouses asociados.
 
 6. Catálogo de artículos para el alta de recepciones
    - No existe un endpoint "listar todos los artículos" (solo /articles/findByCriteria, que
@@ -38,11 +36,11 @@ sentido con ese objeto. Falta que backend confirme/implemente estos contratos:
    - Falta un endpoint tipo /articles/findAll para poder armar un selector por nombre/SKU.
 
 7. Importes y datos comerciales en respuestas de receipts
-    - Todas las respuestas que devuelven una Receipt deben incluir `price: number`, que es
+    - Todas las respuestas que devuelven una Receipt deben incluir `totalAmount: number`, que es
        el importe total del documento. El frontend acumula ese valor para las tarjetas de
        recepciones nuevas, enviadas y recibidas; no recalcula totales desde los artículos.
     - Cada objeto dentro de `details` debe incluir `salePrice: number` y `supplier: string`,
-       igual que el contrato de artículos. El detalle de la recepción usa esos campos para
-       mostrar precio de venta y proveedor.
+       igual que el contrato de artículos. Para rol USER, `purchasePrice` no debe aparecer;
+       el detalle de la recepción usa los campos disponibles para mostrar precio de venta y proveedor.
 
 Confirmar estos puntos con backend antes de integrar contra el ambiente real (dev/prod).

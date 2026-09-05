@@ -1,8 +1,8 @@
 import { apiService } from './apiService'
 
 class ModulesService {
-  findByUser() {
-    return apiService.request('GET', '/modules/user')
+  findByUser(email) {
+    return apiService.request('POST', '/modules/loadByUser', { email })
   }
 }
 

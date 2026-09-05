@@ -6,7 +6,7 @@ export function ReceiptsPage({ user, mode, setMode, availableModes, modules, mob
   const receiptsModule = modules.find((module) => module.mainId === 'MOD_RECEIPTS')
   const permissions = receiptsModule?.permissions ?? {}
   const canWrite = permissions.WRITE === true
-  const canRead = canWrite || permissions.READ === true
+  const canRead = permissions.WRITE === true || permissions.READ === true
   const isOwner = user?.roleName === 'OWNER'
 
   return (

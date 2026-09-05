@@ -12,10 +12,11 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { AddRounded, ClearRounded, DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material'
+import { AccountBalanceWalletRounded, AddRounded, ClearRounded, DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material'
 import { receiptsService, warehousesService } from '../../service'
 import { CollapsiblePanel } from '../CollapsiblePanel'
 import { DataTable } from '../DataTable'
+import { DashboardContextCard } from '../DashboardContextCard'
 import { MetricCard } from '../MetricCard'
 import { FilterField } from '../FilterField'
 import { ReceiptStatusChip } from './ReceiptStatusChip'
@@ -66,7 +67,7 @@ export function ReceiptsBoard({ user, canWrite, isOwner, onError }) {
       try {
         const [warehousesResponse, receiptsResponse] = await Promise.all([
           warehousesService.findAll(),
-          receiptsService.findAll({ page: 1, size: ROWS_PER_PAGE, criteria: {} }),
+          receiptsService.findAll(),
         ])
         if (!active) return
         setWarehouses(warehousesResponse.data ?? [])
@@ -120,6 +121,7 @@ export function ReceiptsBoard({ user, canWrite, isOwner, onError }) {
   const newReceipts = warehouseFilteredReceipts.filter((receipt) => isNewStatus(receipt.statusDescription))
   const sentReceipts = warehouseFilteredReceipts.filter((receipt) => isSentStatus(receipt.statusDescription))
   const receivedReceipts = warehouseFilteredReceipts.filter((receipt) => isReceivedStatus(receipt.statusDescription))
+  const filteredReceiptsTotal = sumReceiptPrices(filteredReceipts)
 
   const statusOptions = useMemo(() => {
     const seen = new Map()
@@ -258,7 +260,7 @@ export function ReceiptsBoard({ user, canWrite, isOwner, onError }) {
       key: 'price',
       label: 'Importe total',
       className: 'receipt-amount-cell',
-      render: (receipt) => formatReceiptAmount(receipt.price),
+      render: (receipt) => formatReceiptAmount(receipt.totalAmount),
     },
     {
       key: 'description',
@@ -277,6 +279,7 @@ export function ReceiptsBoard({ user, canWrite, isOwner, onError }) {
       key: 'actions',
       label: 'Acciones',
       align: 'right',
+      className: 'receipt-actions-cell',
       render: (receipt) => (
         <>
           <Tooltip title="Ver detalle">
@@ -308,28 +311,45 @@ export function ReceiptsBoard({ user, canWrite, isOwner, onError }) {
       <Typography variant="h5" className="receipts-title">Recepciones - envío de mercadería</Typography>
 
       <Box className="receipts-warehouse-row">
-        <FilterField label="Depósitos" className="filter-field-warehouse">
-          <Select
-            multiple
-            fullWidth
-            value={selectedCodes}
-            onChange={handleWarehouseFilterChange}
-            input={<OutlinedInput notched={false} />}
-            aria-label="Depósitos"
-            MenuProps={{ slotProps: { paper: { className: 'receipt-filter-menu' } } }}
-            renderValue={(selected) => {
-              const label = selected.length ? selected.map(getWarehouseLabel).join(', ') : 'Todos los depósitos'
-              return <span title={label}>{label}</span>
-            }}
-          >
-            {warehouses.map((warehouse) => (
-              <MenuItem key={warehouse.code} value={warehouse.code}>
-                <Checkbox checked={selectedCodes.includes(warehouse.code)} />
-                {warehouse.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FilterField>
+        <Box className="receipts-warehouse-filter">
+          <FilterField label="Depósitos" className="filter-field-warehouse">
+            <Select
+              multiple
+              fullWidth
+              value={selectedCodes}
+              onChange={handleWarehouseFilterChange}
+              input={<OutlinedInput notched={false} />}
+              aria-label="Depósitos"
+              MenuProps={{ slotProps: { paper: { className: 'receipt-filter-menu' } } }}
+              renderValue={(selected) => {
+                const label = selected.length ? selected.map(getWarehouseLabel).join(', ') : 'Todos los depósitos'
+                return <span title={label}>{label}</span>
+              }}
+            >
+              {warehouses.map((warehouse) => (
+                <MenuItem key={warehouse.code} value={warehouse.code}>
+                  <Checkbox checked={selectedCodes.includes(warehouse.code)} />
+                  {warehouse.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FilterField>
+        </Box>
+        {canWrite && (
+          <DashboardContextCard
+            icon={<AddRounded />}
+            label="Registrar envío"
+            value="Nueva recepción"
+            tone="emerald"
+            onClick={() => setFormDialog({ open: true, mode: 'create', receipt: null })}
+          />
+        )}
+        <DashboardContextCard
+          icon={<AccountBalanceWalletRounded />}
+          label="Importe total"
+          value={formatReceiptAmount(filteredReceiptsTotal)}
+          tone="rose"
+        />
       </Box>
 
       <CollapsiblePanel
@@ -415,15 +435,6 @@ export function ReceiptsBoard({ user, canWrite, isOwner, onError }) {
           >
             Borrar filtros
           </Button>
-          {canWrite && (
-            <Box component="button" type="button" className="receipt-create-card" disabled>
-              <span className="receipt-create-icon"><AddRounded /></span>
-              <span className="receipt-create-text">
-                <strong>Nueva recepción</strong>
-                <small>Registrar envío de mercadería</small>
-              </span>
-            </Box>
-          )}
         </Box>
         </Box>
       </CollapsiblePanel>

@@ -8,7 +8,7 @@
       "origin": "WH-001",
       "destiny": "WH-002",
       "description": "Transfer of electronic components",
-      "price": 479.98,
+      "totalAmount": 479.98,
       "userId": 3,
       "username": "user1",
       "userEmail": "user1@local",
@@ -38,6 +38,6 @@
       ]
     }
   ],
-  "isSuccess": true,
+  "success": true,
   "message": "Receipts retrieved successfully"
 }

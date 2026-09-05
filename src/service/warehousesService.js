@@ -2,7 +2,7 @@ import { apiService } from './apiService'
 
 class WarehousesService {
   findAll() {
-    return apiService.request('GET', '/warehouses')
+    return apiService.request('GET', '/warehouses/findAll', undefined, { moduleMainId: 'MOD_WAREHOUSES' })
   }
 }
 

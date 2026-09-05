@@ -25,6 +25,6 @@
       "editDate": "2026-09-01T08:00:00"
     }
   ],
-  "isSuccess": true,
+  "success": true,
   "message": "Warehouses retrieved successfully"
 }

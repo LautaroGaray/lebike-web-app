@@ -6,7 +6,7 @@ class AuthService {
   }
 
   logout() {
-    return apiService.request('POST', '/auth/logout')
+    return apiService.request('POST', '/auth/logout', undefined, { headers: { 'X-Action': 'NONE' } })
   }
 }
 

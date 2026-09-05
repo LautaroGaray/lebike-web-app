@@ -15,6 +15,10 @@ import {
 
 const moduleRoutes = { MOD_RECEIPTS: '/receipts' }
 
+function isModuleAvailable(module) {
+  return module.permissions?.READ === true || module.permissions?.WRITE === true
+}
+
 function getModuleIcon(module) {
   const moduleKey = `${module.mainId ?? ''} ${module.name ?? ''}`.toLowerCase()
   if (moduleKey.includes('user') || moduleKey.includes('usuario')) return PeopleAltRounded
@@ -37,7 +41,7 @@ function ModuleChild({ child }) {
 
 function ModuleItem({ module, collapsed, onNavigate }) {
   const [open, setOpen] = useState(false)
-  const children = module.children ?? []
+  const children = (module.children ?? []).filter(isModuleAvailable)
   const Icon = getModuleIcon(module)
   const navigate = useNavigate()
   const location = useLocation()
@@ -70,6 +74,7 @@ function ModuleItem({ module, collapsed, onNavigate }) {
 function NavigationContent({ modules, collapsed, onNavigate }) {
   const navigate = useNavigate()
   const location = useLocation()
+  const availableModules = modules.filter(isModuleAvailable)
 
   const handleHomeClick = () => {
     navigate('/home')
@@ -83,7 +88,7 @@ function NavigationContent({ modules, collapsed, onNavigate }) {
           <ListItemIcon><HomeRounded /></ListItemIcon>
           {!collapsed && <ListItemText primary="Home" />}
         </ListItemButton>
-        {modules.map((module) => (
+        {availableModules.map((module) => (
           <ModuleItem key={module.id ?? module.mainId} module={module} collapsed={collapsed} onNavigate={onNavigate} />
         ))}
       </List>

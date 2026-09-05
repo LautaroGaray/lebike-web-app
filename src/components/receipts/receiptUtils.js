@@ -18,7 +18,9 @@ export function isReceivedStatus(statusDescription) {
 }
 
 export function sumReceiptPrices(receipts) {
-  return receipts.reduce((total, receipt) => total + Number(receipt.price ?? 0), 0)
+  return receipts.reduce((total, receipt) => (
+    total + Number(receipt.totalAmount ?? receipt.amount ?? receipt.price ?? 0)
+  ), 0)
 }
 
 export function formatReceiptAmount(value) {

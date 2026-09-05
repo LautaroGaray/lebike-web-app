@@ -1,7 +1,5 @@
 export { apiService, session, ApiService } from './apiService'
 export { authService, AuthService } from './authService'
 export { modulesService, ModulesService } from './modulesService'
-export { usersService, UsersService } from './usersService'
-export { rolesService, RolesService } from './rolesService'
 export { warehousesService, WarehousesService } from './warehousesService'
 export { receiptsService, ReceiptsService } from './receiptsService'

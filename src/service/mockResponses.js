@@ -11,11 +11,11 @@ import receiptHistoryResponse from '../../examples-frontend/receipts/history.jso
 
 export const mockResponses = {
   'POST /auth/login': loginResponse,
-  'GET /modules/user': modulesResponse,
+  'POST /modules/loadByUser': modulesResponse,
   'GET /users': usersResponse,
   'GET /users/me/role': roleResponse,
-  'GET /warehouses': warehousesResponse,
-  'POST /receipts/findAll': receiptsListResponse,
+  'GET /warehouses/findAll': warehousesResponse,
+  'GET /receipts/findAll': receiptsListResponse,
   'POST /receipts/register': receiptRegisterResponse,
   'POST /receipts/edit': receiptEditResponse,
   'POST /receipts/delete': receiptDeleteResponse,
