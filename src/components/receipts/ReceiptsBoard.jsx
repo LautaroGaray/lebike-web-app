@@ -12,13 +12,14 @@ import {
   Typography,
 } from '@mui/material'
 import { AddRounded, ClearRounded, DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material'
-import { receiptsService, warehousesService } from '../../service'
+import { receiptsService, session, statusesService, warehousesService } from '../../service'
 import { CollapsiblePanel } from '../CollapsiblePanel'
 import { DataTable } from '../DataTable'
 import { DashboardContextCard } from '../DashboardContextCard'
 import { MetricCard } from '../MetricCard'
 import { FilterField } from '../FilterField'
 import { ReceiptStatusChip } from './ReceiptStatusChip'
+import { ReceiptStatusCell } from './ReceiptStatusCell'
 import { ReceiptDetailDialog } from './ReceiptDetailDialog'
 import { ReceiptFormDialog } from './ReceiptFormDialog'
 import { ConfirmDialog } from '../ConfirmDialog'
@@ -29,6 +30,7 @@ import recibidaIcon from '../../assets/recibida.png'
 import {
   formatReceiptAmount,
   formatReceiptDate,
+  getAllowedStatusesForReceipt,
   isNewStatus,
   isReceivedStatus,
   isSentStatus,
@@ -46,9 +48,11 @@ function getUserKey(receipt) {
   return receipt.userId ?? receipt.userEmail
 }
 
-export function ReceiptsBoard({ user, canWrite, isOwner, onError }) {
+export function ReceiptsBoard({ user, canWrite, isOwner, modules, onError }) {
   const [warehouses, setWarehouses] = useState([])
   const [receipts, setReceipts] = useState([])
+  const [allStatuses, setAllStatuses] = useState([])
+  const [updatingStatusId, setUpdatingStatusId] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [selectedCodes, setSelectedCodes] = useState([])
   const [selectedStatuses, setSelectedStatuses] = useState([])
@@ -62,19 +66,24 @@ export function ReceiptsBoard({ user, canWrite, isOwner, onError }) {
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  const statusManagerPermissions = session.getModulePermissions('MOD_RECEIPTS_STATUS_MANAGER')
+  const canManageStatus = statusManagerPermissions?.WRITE === true || canWrite || isOwner
+
   useEffect(() => {
     let active = true
 
     async function load() {
       setIsLoading(true)
       try {
-        const [warehousesResponse, receiptsResponse] = await Promise.all([
+        const [warehousesResponse, receiptsResponse, statusesResponse] = await Promise.all([
           warehousesService.findAll(),
           receiptsService.findAll(),
+          statusesService.getAll().catch(() => ({ data: [] })),
         ])
         if (!active) return
         setWarehouses(warehousesResponse.data ?? [])
         setReceipts(receiptsResponse.data ?? [])
+        setAllStatuses(statusesResponse.data ?? [])
       } catch (loadError) {
         if (active) onError(loadError.message || 'No se pudieron cargar las recepciones')
       } finally {

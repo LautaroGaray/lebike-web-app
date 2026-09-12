@@ -9,12 +9,42 @@ export function isNewStatus(statusDescription) {
 
 export function isSentStatus(statusDescription) {
   const normalized = (statusDescription ?? '').toLowerCase()
-  return normalized.includes('sent') || normalized.includes('enviad')
+  return (
+    normalized.includes('sent') ||
+    normalized.includes('enviad') ||
+    normalized.includes('dispatch') ||
+    normalized.includes('preparation') ||
+    normalized.includes('ready')
+  )
 }
 
 export function isReceivedStatus(statusDescription) {
   const normalized = (statusDescription ?? '').toLowerCase()
   return normalized.includes('received') || normalized.includes('recibid')
+}
+
+export function isDispatchedOrPartial(status, statusDescription) {
+  if (status === 95 || status === 97) return true
+  const normalized = (statusDescription ?? '').toLowerCase()
+  return normalized.includes('dispatch') || normalized.includes('partial')
+}
+
+export function getAllowedStatusesForReceipt(receipt, user, allStatuses = [], hasStatusManagerWrite = false) {
+  if (!hasStatusManagerWrite || !receipt) return []
+
+  const isUserRole = user?.roleName === 'USER'
+
+  if (isUserRole) {
+    // Role USER: only allowed to change status of receipts currently in dispatched (95) or partially received (97)
+    if (!isDispatchedOrPartial(receipt.status, receipt.statusDescription)) {
+      return []
+    }
+    // Target statuses available to USER: partially received (97) and received (110)
+    return allStatuses.filter((s) => s.status === 97 || s.status === 110)
+  }
+
+  // Non-USER roles (ADMIN / OWNER / managers with WRITE): can change to any active status except deleted (0)
+  return allStatuses.filter((s) => s.status !== 0)
 }
 
 export function sumReceiptPrices(receipts) {

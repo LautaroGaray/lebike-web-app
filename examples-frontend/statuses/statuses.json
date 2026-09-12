@@ -1,0 +1,13 @@
+{
+  "data": [
+    { "status": 0, "description": "deleted" },
+    { "status": 10, "description": "new" },
+    { "status": 55, "description": "on preparation" },
+    { "status": 75, "description": "ready to dispatched" },
+    { "status": 95, "description": "dispatched" },
+    { "status": 97, "description": "partially received" },
+    { "status": 110, "description": "received" }
+  ],
+  "isSuccess": true,
+  "message": "Statuses retrieved successfully"
+}

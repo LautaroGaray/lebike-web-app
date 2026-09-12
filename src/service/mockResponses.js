@@ -8,6 +8,7 @@ import receiptRegisterResponse from '../../examples-frontend/receipts/register.j
 import receiptEditResponse from '../../examples-frontend/receipts/edit.json'
 import receiptDeleteResponse from '../../examples-frontend/receipts/delete.json'
 import receiptHistoryResponse from '../../examples-frontend/receipts/history.json'
+import statusesResponse from '../../examples-frontend/statuses/statuses.json'
 
 export const mockResponses = {
   'POST /auth/login': loginResponse,
@@ -15,6 +16,7 @@ export const mockResponses = {
   'GET /users': usersResponse,
   'GET /users/me/role': roleResponse,
   'GET /warehouses/findAll': warehousesResponse,
+  'GET /statuses': statusesResponse,
   'GET /receipts/findAll': receiptsListResponse,
   'POST /receipts/register': receiptRegisterResponse,
   'POST /receipts/edit': receiptEditResponse,

@@ -5,26 +5,54 @@ const defaultConfig = {
   useMockApi: import.meta.env.VITE_USE_MOCK_API === 'true',
 }
 
+function findModuleByMainId(modules, mainId) {
+  if (!Array.isArray(modules) || !mainId) return null
+  for (const item of modules) {
+    if (item?.mainId === mainId) return item
+    if (item?.children && Array.isArray(item.children) && item.children.length > 0) {
+      const found = findModuleByMainId(item.children, mainId)
+      if (found) return found
+    }
+  }
+  return null
+}
+
 class ApiService {
   constructor(config = defaultConfig) {
     this.config = config
   }
 
   async request(method, path, body, options = {}) {
-    const mockKey = `${method.toUpperCase()} ${path}`
-    if (this.config.useMockApi && mockResponses[mockKey]) {
-      return structuredClone(mockResponses[mockKey])
+    const cleanPath = path.split('?')[0]
+    const mockKey = `${method.toUpperCase()} ${cleanPath}`
+    if (this.config.useMockApi) {
+      if (mockResponses[mockKey]) {
+        return structuredClone(mockResponses[mockKey])
+      }
+      if (mockResponses[`${method.toUpperCase()} ${path}`]) {
+        return structuredClone(mockResponses[`${method.toUpperCase()} ${path}`])
+      }
+      if (method.toUpperCase() === 'PUT' && cleanPath.startsWith('/receipts/status/')) {
+        const id = Number(cleanPath.replace('/receipts/status/', ''))
+        return {
+          data: { id, status: body?.status, editDate: new Date().toISOString() },
+          isSuccess: true,
+          message: 'Receipt status updated successfully',
+        }
+      }
     }
 
     const module = options.moduleMainId
-      ? authSession.modules.find((item) => item.mainId === options.moduleMainId)
+      ? findModuleByMainId(authSession.modules, options.moduleMainId)
       : options.bootstrapModuleMainId
     const moduleMainId = typeof module === 'string' ? module : module?.mainId
-    const action = module?.permissions?.WRITE === true
-      ? 'WRITE'
-      : module?.permissions?.READ === true
-        ? 'READ'
-        : undefined
+    const action = options.action ?? (
+      module?.permissions?.WRITE === true
+        ? 'WRITE'
+        : module?.permissions?.READ === true
+          ? 'READ'
+          : undefined
+    )
     if (options.moduleMainId && (!moduleMainId || !action)) {
       throw new Error('No se pudo resolver el módulo autorizado')
     }
@@ -95,7 +123,7 @@ export const session = {
     return authSession.modules
   },
   getModulePermissions(mainId) {
-    const module = authSession.modules.find((item) => item.mainId === mainId)
+    const module = findModuleByMainId(authSession.modules, mainId)
     return module?.permissions ?? { READ: false, WRITE: false }
   },
   clear() {

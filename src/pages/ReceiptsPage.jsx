@@ -24,7 +24,7 @@ export function ReceiptsPage({ user, mode, setMode, availableModes, modules, mob
     >
       <Box className="content-area">
         {canRead ? (
-          <ReceiptsBoard user={user} canWrite={canWrite} isOwner={isOwner} onError={onError} />
+          <ReceiptsBoard user={user} canWrite={canWrite} isOwner={isOwner} modules={modules} onError={onError} />
         ) : (
           <Typography color="text.secondary">No tenés permisos para ver este módulo.</Typography>
         )}

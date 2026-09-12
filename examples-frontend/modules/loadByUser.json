@@ -38,7 +38,19 @@
       "mainId": "MOD_RECEIPTS",
       "name": "Receipts",
       "parentId": null,
-      "children": [],
+      "children": [
+        {
+          "id": 6,
+          "mainId": "MOD_RECEIPTS_STATUS_MANAGER",
+          "name": "ReceiptsStatusManager",
+          "parentId": 4,
+          "permissions": {
+            "READ": true,
+            "WRITE": true
+          },
+          "children": []
+        }
+      ],
       "permissions": {
         "READ": true,
         "WRITE": true
